@@ -1,5 +1,5 @@
 #include "M_Matrix.h"
-
+#include <cmath>
 //OOP Reqs
 
 template <typename T>
@@ -96,3 +96,51 @@ void M_Matrix<T>::genUnitMatrix(unsigned int rows, unsigned int cols){
 template void M_Matrix<int>::genUnitMatrix(unsigned int rows, unsigned int cols);
 template void M_Matrix<float>::genUnitMatrix(unsigned int rows, unsigned int cols);
 template void M_Matrix<uint8_t>::genUnitMatrix(unsigned int rows, unsigned int cols);
+
+#define T_PI 3.0
+
+template <typename T>
+void M_Matrix<T>::genGaussianMatrix(unsigned int rows, unsigned int cols){
+	const float  sigma = 10.0;
+	float  sum   = 0;
+	float  r, s  = 2.0 * sigma * sigma;
+	try{
+		if(rows != cols){
+			throw NonSquareError;
+		}
+		this->rows = rows;
+		this->cols = cols;
+		this->mtr.resize(this->rows, std::vector<T>(this->cols));
+		
+		for(int row = -((int)rows / 2); row <= (int)rows/2; row++){
+			for(int col = -((int)cols / 2); col <= (int)cols/2; col++){
+				r                               = std::sqrt(row * row + col * col);
+				int row_index                   = row + (int)rows / 2;
+				int col_index                   = col + (int)cols / 2;
+				this->mtr[row_index][col_index] = (std::exp(-(r * r) / s)) / (T_PI * s);
+				sum                            += this->mtr[row_index][col_index];
+			}
+			std::cout << std::endl;
+		}
+		for(unsigned int row = 0; row < rows; row++){
+			for(unsigned int col = 0; col < rows; col++){
+				this->mtr[row][col] /= sum;
+			}
+		}
+	}
+	catch(std::exception& e){
+		std::cout << e.what() << std::endl;
+	}
+}
+template void M_Matrix<float>::genGaussianMatrix(unsigned int rows, unsigned int cols);
+
+template <typename T>
+F_Vector<T> M_Matrix<T>::toVector(){
+
+}
+
+template F_Vector<int> M_Matrix<int>::toVector();
+template F_Vector<float> M_Matrix<float>::toVector();
+template F_Vector<uint8_t> M_Matrix<uint8_t>::toVector();
+/*OPERATORS*/
+

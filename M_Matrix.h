@@ -23,7 +23,7 @@ public:
 public:
 	void genZeroMatrix(unsigned int rows, unsigned int cols);
 	void genUnitMatrix(unsigned int rows, unsigned int cols);
-	void generateGaussianMatrix(unsigned int rows, unsigned int cols);
+	void genGaussianMatrix(unsigned int rows, unsigned int cols);
 	F_Vector<T> toVector();
 	T*			toArray();
 	F_Vector<T> flatten();

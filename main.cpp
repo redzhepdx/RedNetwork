@@ -6,9 +6,9 @@ int main() {
 	//matrix.printMatrix();
 	std::unique_ptr<M_Matrix<float>> mtr = std::make_unique<M_Matrix<float>>(5, 5);
 	mtr->printMatrix();
-	mtr->genUnitMatrix(5,5);
+	//mtr->genUnitMatrix(5,5);
+	mtr->genGaussianMatrix(5,5);
 	mtr->printMatrix();
 	//getchar();
-	
 	return 0;
 }
