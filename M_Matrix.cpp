@@ -1,6 +1,15 @@
 #include "M_Matrix.h"
 #include <cmath>
+
 //OOP Reqs
+template <typename T>
+M_Matrix<T>::M_Matrix(){
+
+}
+
+template M_Matrix<uint8_t>::M_Matrix();
+template M_Matrix<float>::M_Matrix();
+template M_Matrix<int>::M_Matrix();
 
 template <typename T>
 M_Matrix<T>::M_Matrix(unsigned int rows, unsigned int cols){
@@ -97,7 +106,9 @@ template void M_Matrix<int>::genUnitMatrix(unsigned int rows, unsigned int cols)
 template void M_Matrix<float>::genUnitMatrix(unsigned int rows, unsigned int cols);
 template void M_Matrix<uint8_t>::genUnitMatrix(unsigned int rows, unsigned int cols);
 
+#ifndef T_PI
 #define T_PI 3.0
+#endif
 
 template <typename T>
 void M_Matrix<T>::genGaussianMatrix(unsigned int rows, unsigned int cols){
@@ -120,7 +131,6 @@ void M_Matrix<T>::genGaussianMatrix(unsigned int rows, unsigned int cols){
 				this->mtr[row_index][col_index] = (std::exp(-(r * r) / s)) / (T_PI * s);
 				sum                            += this->mtr[row_index][col_index];
 			}
-			std::cout << std::endl;
 		}
 		for(unsigned int row = 0; row < rows; row++){
 			for(unsigned int col = 0; col < rows; col++){
@@ -136,11 +146,27 @@ template void M_Matrix<float>::genGaussianMatrix(unsigned int rows, unsigned int
 
 template <typename T>
 F_Vector<T> M_Matrix<T>::toVector(){
-
+	
 }
 
 template F_Vector<int> M_Matrix<int>::toVector();
 template F_Vector<float> M_Matrix<float>::toVector();
 template F_Vector<uint8_t> M_Matrix<uint8_t>::toVector();
+
+template <typename T>
+T* M_Matrix<T>::toArray(){
+	T* flat_arr = new T[this->rows * this->cols];
+	for(unsigned int row = 0; row < this->rows; row++){
+		for(unsigned int col = 0; col < this->cols; col++){
+			flat_arr[row * this->cols + col] = this->mtr[row][col];
+		}
+	}
+	return flat_arr;
+}
+
+template int* M_Matrix<int>::toArray();
+template float* M_Matrix<float>::toArray();
+template uint8_t* M_Matrix<uint8_t>::toArray();
+
 /*OPERATORS*/
 
