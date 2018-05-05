@@ -24,7 +24,7 @@ template M_Matrix<float>::M_Matrix(unsigned int rows, unsigned int cols);
 
 template <typename T>
 M_Matrix<T>::M_Matrix(const M_Matrix<T> &other) {
-    this->mtr = other.mtr;
+	this->mtr = other.mtr;
 }
 
 template M_Matrix<int>::M_Matrix(const M_Matrix<int> &other);
@@ -32,7 +32,7 @@ template M_Matrix<float>::M_Matrix(const M_Matrix<float> &other);
 
 template <typename T>
 M_Matrix<T>::~M_Matrix(){
-	delete this;
+	this->mtr.clear();
 }
 
 template M_Matrix<int>::~M_Matrix();
@@ -144,9 +144,13 @@ void M_Matrix<T>::genGaussianMatrix(unsigned int rows, unsigned int cols){
 }
 template void M_Matrix<float>::genGaussianMatrix(unsigned int rows, unsigned int cols);
 
+
+
 template <typename T>
 F_Vector<T> M_Matrix<T>::toVector(){
-	
+	F_Vector<T> vec;
+
+	return vec;
 }
 
 template F_Vector<int> M_Matrix<int>::toVector();
@@ -168,5 +172,21 @@ template int* M_Matrix<int>::toArray();
 template float* M_Matrix<float>::toArray();
 template uint8_t* M_Matrix<uint8_t>::toArray();
 
+template <typename T>
+F_Vector<T> M_Matrix<T>::flatten(){
+	F_Vector<T> vec(this->rows * this->cols);
+
+	for (unsigned int row = 0; row < this->rows; row++) {
+		for (unsigned int col = 0; col < this->cols; col++) {
+			vec.vec.push_back(this->mtr[row][col]);
+		}
+	}
+
+	return vec;
+}
+
+template F_Vector<int> M_Matrix<int>::flatten();
+template F_Vector<float> M_Matrix<float>::flatten();
+template F_Vector<uint8_t> M_Matrix<uint8_t>::flatten();
 /*OPERATORS*/
 

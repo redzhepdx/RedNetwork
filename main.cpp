@@ -5,15 +5,21 @@ int main() {
 	M_Matrix<float> *matrix = new M_Matrix<float>();
 	matrix->genGaussianMatrix(5, 5);
 	matrix->printMatrix();
-	std::cout << "AFTER FLATTEN OPERATION" << std::endl;
+	
 
 	float* fltMTR = matrix->toArray();
 	unsigned int size = matrix->mtr.size() * matrix->mtr[0].size();
+	std::cout << "F_VECTOR FLATTEN OPERATION" << std::endl;
+	F_Vector<float> flat = matrix->flatten();
+	flat.printVec();
 
+	flat += 3.0;
+	flat.printVec();
+	std::cout << "AFTER FLATTEN OPERATION" << std::endl;
 	try{
-		for(int i = 0; i < size; i++){
+		for(uint16_t i = 0; i < size; i++){
 			std::cout << fltMTR[i] << " ";
-			std::cout << "move" << std::endl;
+			//std::cout << "move" << std::endl;
 		}
 	}
 	catch(std::exception& e){
@@ -27,7 +33,9 @@ int main() {
 	//mtr->genGaussianMatrix(5,5);
 	//mtr->printMatrix();
 	//getchar();
+	
 	delete fltMTR;
 	delete matrix;
+	getchar();
 	return 0;
 }
