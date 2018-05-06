@@ -1,5 +1,8 @@
 #include "M_Matrix.h"
+#include "Setup.h"
 #include <cmath>
+
+#if CPU
 
 //OOP Reqs
 template <typename T>
@@ -71,6 +74,7 @@ template float   M_Matrix<float>::getCellValue(unsigned int row, unsigned int co
 template uint8_t M_Matrix<uint8_t>::getCellValue(unsigned int row, unsigned int col);
 
 /*Matrix Generation Codes*/
+/*TODO There is bug*/
 template <typename T>
 void M_Matrix<T>::genZeroMatrix(unsigned int rows, unsigned int cols){
 	int zero  = 0;
@@ -189,4 +193,36 @@ template F_Vector<int> M_Matrix<int>::flatten();
 template F_Vector<float> M_Matrix<float>::flatten();
 template F_Vector<uint8_t> M_Matrix<uint8_t>::flatten();
 /*OPERATORS*/
+
+template <typename T>
+M_Matrix<T> M_Matrix<T>::operator*(const M_Matrix<T> &other) const {
+	M_Matrix<T> matrix;
+	try {
+		if (this->cols != other.rows) {
+			throw InvalidMatrixSize;
+		}
+		matrix.genUnitMatrix(this->rows, other.cols);
+		matrix.printMatrix();
+		for (unsigned int row = 0; row < this->rows; row++) {
+			for (unsigned int col = 0; col < this->cols; col++) {
+				for (unsigned int k = 0; k < other.rows; k++) {
+					matrix.mtr[row][col] += (this->mtr[row][k] * other.mtr[k][col]);
+				}
+			}
+		}
+		std::cout << " Inside " << std::endl;
+		matrix.printMatrix();
+		return matrix;
+	}
+	catch (std::exception &ex) {
+		std::cout << ex.what() << std::endl;
+	}
+	return matrix;
+}
+
+template M_Matrix<int> M_Matrix<int>::operator*(const M_Matrix<int> &other) const;
+template M_Matrix<float> M_Matrix<float>::operator*(const M_Matrix<float> &other) const;
+template M_Matrix<uint8_t> M_Matrix<uint8_t>::operator*(const M_Matrix<uint8_t> &other) const;
+
+#endif
 

@@ -5,6 +5,17 @@ int main() {
 	M_Matrix<float> *matrix = new M_Matrix<float>();
 	matrix->genGaussianMatrix(5, 5);
 	matrix->printMatrix();
+
+	M_Matrix<int> mtr1;
+	mtr1.genUnitMatrix(3, 3);
+
+	M_Matrix<int> mtr2;
+	mtr2.genUnitMatrix(3, 3);
+
+	std::cout << "Multiplication" << std::endl;
+	M_Matrix<int> mtr3 = mtr1 * mtr2;
+	mtr3.printMatrix();
+
 	
 
 	float* fltMTR = matrix->toArray();
