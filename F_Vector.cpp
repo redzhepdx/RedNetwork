@@ -1,4 +1,7 @@
 #include "F_Vector.h"
+#include <algorithm>
+#include <memory>
+
 
 template <typename T>
 F_Vector<T>::F_Vector(const F_Vector<T> &other) {
@@ -12,12 +15,16 @@ template F_Vector<uint8_t>::F_Vector(const F_Vector<uint8_t> &other);
 
 
 template <typename T>
-F_Vector<T>::F_Vector(unsigned int size, bool init=false) {
+F_Vector<T>::F_Vector(unsigned int size, bool init) {
 	this->size = size;
 	if (init) {
 		this->vec.resize(size, 0);
 	}
 }
+template F_Vector<int>::F_Vector(unsigned int size, bool init);
+template F_Vector<float>::F_Vector(unsigned int size, bool init);
+template F_Vector<uint8_t>::F_Vector(unsigned int size, bool init);
+
 template <typename T>
 T* F_Vector<T>::toArray() {
 	T * arr = new T[this->size];
@@ -32,14 +39,26 @@ template float* F_Vector<float>::toArray();
 template uint8_t* F_Vector<uint8_t>::toArray();
 
 template <typename T>
+F_Vector<T> F_Vector<T>::operator=(const F_Vector<T> &other){
+	this->size = other.size;
+	this->vec = other.vec;
+	return *this;
+}
+
+template F_Vector<int> F_Vector<int>::operator=(const F_Vector<int> &other);
+template F_Vector<size_t> F_Vector<size_t>::operator=(const F_Vector<size_t> &other);
+template F_Vector<float> F_Vector<float>::operator=(const F_Vector<float> &other);
+template F_Vector<uint8_t> F_Vector<uint8_t>::operator=(const F_Vector<uint8_t> &other);
+
+template <typename T>
 F_Vector<T> F_Vector<T>::operator+(const F_Vector<T> &other) const {
+	F_Vector<T> _vec(this->size, false);
 	try {
 		if (this->size == other.size) {
 			throw NoProperVector;
 		}
-		F_Vector<T> _vec(this->size);
 		for (unsigned int i = 0; i < this->size; i++) {
-			_vec = this->vec[i] + other.vec[i];
+			_vec.vec[i] = this->vec[i] + other.vec[i];
 		}
 		return _vec;
 	}
@@ -47,53 +66,53 @@ F_Vector<T> F_Vector<T>::operator+(const F_Vector<T> &other) const {
 		std::cout << e.what() << std::endl;
 	}
 
-	return NULL;
+	return _vec;
 	
 }
 
 template F_Vector<int> F_Vector<int>::operator+(const F_Vector<int> &other) const;
 template F_Vector<float> F_Vector<float>::operator+(const F_Vector<float> &other) const;
 template F_Vector<uint8_t> F_Vector<uint8_t>::operator+(const F_Vector<uint8_t> &other) const;
+template F_Vector<size_t> F_Vector<size_t>::operator+(const F_Vector<size_t> &other) const;
 
 template <typename T>
 F_Vector<T> F_Vector<T>::operator-(const F_Vector<T> &other) const {
+	F_Vector<T> _vec(this->size, false);
 	try{
 		if (this->size == other.size) {
 			throw NoProperVector;
 		}
-		F_Vector<T> _vec(this->size);
 		for (unsigned int i = 0; i < this->size; i++) {
-			_vec = this->vec[i] - other.vec[i];
+			_vec.vec[i] = this->vec[i] - other.vec[i];
 		}
 		return _vec;
 	}
 	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
 	}
-	return NULL;
+	return _vec;
 }
 
 template F_Vector<int> F_Vector<int>::operator-(const F_Vector<int> &other) const;
 template F_Vector<float> F_Vector<float>::operator-(const F_Vector<float> &other) const;
 template F_Vector<uint8_t> F_Vector<uint8_t>::operator-(const F_Vector<uint8_t> &other) const;
 
-
 template <typename T>
 F_Vector<T> F_Vector<T>::operator*(const F_Vector<T> &other) const {
+	F_Vector<T> _vec(this->size, false);
 	try {
 		if (this->size == other.size) {
 			throw NoProperVector;
 		}
-		F_Vector<T> _vec(this->size);
 		for (unsigned int i = 0; i < this->size; i++) {
-			_vec = this->vec[i] * other.vec[i];
+			_vec.vec[i] = this->vec[i] * other.vec[i];
 		}
 		return _vec;
 	}
 	catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
 	}
-	return NULL;
+	return _vec;
 }
 
 template F_Vector<int> F_Vector<int>::operator*(const F_Vector<int> &other) const;

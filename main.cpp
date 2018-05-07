@@ -5,15 +5,22 @@ int main() {
 	M_Matrix<float> *matrix = new M_Matrix<float>();
 	matrix->genGaussianMatrix(5, 5);
 	matrix->printMatrix();
+	M_Matrix<float> mtr1;
+	//mtr1.genUnitMatrix(3, 3);
+	//mtr1.genZeroMatrix(3, 3);
+	mtr1.genMatrixWithValue(3, 6, 5.1);
+	mtr1.printMatrix();
+	std::cout << std::endl;
+	//std::cout << "<<<< ZERO MATRIX >>>>" << std::endl;
 
-	M_Matrix<int> mtr1;
-	mtr1.genUnitMatrix(3, 3);
-
-	M_Matrix<int> mtr2;
-	mtr2.genUnitMatrix(3, 3);
+	M_Matrix<float> mtr2;
+	mtr2.genMatrixWithValue(6, 3, 2.6);
+	//mtr2.genUnitMatrix(6, 3);
+	mtr2.printMatrix();
+	std::cout << std::endl;
 
 	std::cout << "Multiplication" << std::endl;
-	M_Matrix<int> mtr3 = mtr1 * mtr2;
+	M_Matrix<float> mtr3 = mtr1 * mtr2;
 	mtr3.printMatrix();
 
 	

@@ -33,6 +33,7 @@ public:
 	void genZeroMatrix(unsigned int rows, unsigned int cols);
 	void genUnitMatrix(unsigned int rows, unsigned int cols);
 	void genGaussianMatrix(unsigned int rows, unsigned int cols);
+	void genMatrixWithValue(unsigned int rows, unsigned int cols, T value);
 
 	F_Vector<T> toVector();
 	T*			toArray();
@@ -42,8 +43,8 @@ public:
 	M_Matrix<T> operator+(const M_Matrix<T> &other) const;
 	M_Matrix<T> operator-(const M_Matrix<T> &other) const;
 	M_Matrix<T> operator*(const M_Matrix<T> &other) const;
-	bool        operator==(const M_Matrix<T> &other) const;
-
+	M_Matrix<T> operator=(const M_Matrix<T> &other);
+	
 	void operator+=(const T &value);
 	void operator*=(const T &value);
 	void operator/=(const T &value);

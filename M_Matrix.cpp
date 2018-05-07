@@ -74,10 +74,12 @@ template float   M_Matrix<float>::getCellValue(unsigned int row, unsigned int co
 template uint8_t M_Matrix<uint8_t>::getCellValue(unsigned int row, unsigned int col);
 
 /*Matrix Generation Codes*/
-/*TODO There is bug*/
 template <typename T>
 void M_Matrix<T>::genZeroMatrix(unsigned int rows, unsigned int cols){
 	int zero  = 0;
+	this->rows = rows;
+	this->cols = cols;
+
 	std::vector<std::vector<T>> zeros_matrix(rows, std::vector<T>(cols, (T)zero));
 	this->mtr = zeros_matrix; 
 }
@@ -147,7 +149,7 @@ void M_Matrix<T>::genGaussianMatrix(unsigned int rows, unsigned int cols){
 	}
 }
 template void M_Matrix<float>::genGaussianMatrix(unsigned int rows, unsigned int cols);
-
+template void M_Matrix<double>::genGaussianMatrix(unsigned int rows, unsigned int cols);
 
 
 template <typename T>
@@ -178,7 +180,7 @@ template uint8_t* M_Matrix<uint8_t>::toArray();
 
 template <typename T>
 F_Vector<T> M_Matrix<T>::flatten(){
-	F_Vector<T> vec(this->rows * this->cols);
+	F_Vector<T> vec(this->rows * this->cols, false);
 
 	for (unsigned int row = 0; row < this->rows; row++) {
 		for (unsigned int col = 0; col < this->cols; col++) {
@@ -192,7 +194,33 @@ F_Vector<T> M_Matrix<T>::flatten(){
 template F_Vector<int> M_Matrix<int>::flatten();
 template F_Vector<float> M_Matrix<float>::flatten();
 template F_Vector<uint8_t> M_Matrix<uint8_t>::flatten();
+
+template <typename T>
+void M_Matrix<T>::genMatrixWithValue(unsigned int rows, unsigned int cols, T value){
+	this->rows = rows;
+	this->cols = cols;
+
+	std::vector<std::vector<T>> value_mtr(this->rows, std::vector<T>(this->cols, value));
+	this->mtr  = value_mtr;
+}
+
+template void M_Matrix<int>::genMatrixWithValue(unsigned int rows, unsigned int cols, int value);
+template void M_Matrix<float>::genMatrixWithValue(unsigned int rows, unsigned int cols, float value);
+template void M_Matrix<uint8_t>::genMatrixWithValue(unsigned int rows, unsigned int cols, uint8_t value);
+
 /*OPERATORS*/
+template <typename T>
+M_Matrix<T> M_Matrix<T>::operator=(const M_Matrix<T> &other){
+	this->rows = other.rows;
+	this->cols = other.cols;
+	this->mtr  = other.mtr;
+	return *this;
+}
+
+template M_Matrix<int> M_Matrix<int>::operator=(const M_Matrix<int> &other);
+template M_Matrix<float> M_Matrix<float>::operator=(const M_Matrix<float> &other);
+template M_Matrix<uint8_t> M_Matrix<uint8_t>::operator=(const M_Matrix<uint8_t> &other);
+template M_Matrix<size_t> M_Matrix<size_t>::operator=(const M_Matrix<size_t> &other);
 
 template <typename T>
 M_Matrix<T> M_Matrix<T>::operator*(const M_Matrix<T> &other) const {
@@ -201,17 +229,14 @@ M_Matrix<T> M_Matrix<T>::operator*(const M_Matrix<T> &other) const {
 		if (this->cols != other.rows) {
 			throw InvalidMatrixSize;
 		}
-		matrix.genUnitMatrix(this->rows, other.cols);
-		matrix.printMatrix();
+		matrix.genZeroMatrix(this->rows, other.cols);
 		for (unsigned int row = 0; row < this->rows; row++) {
-			for (unsigned int col = 0; col < this->cols; col++) {
+			for (unsigned int col = 0; col < other.cols; col++) {
 				for (unsigned int k = 0; k < other.rows; k++) {
-					matrix.mtr[row][col] += (this->mtr[row][k] * other.mtr[k][col]);
+					matrix.mtr[row][k] += (this->mtr[row][k] * other.mtr[k][col]);
 				}
 			}
 		}
-		std::cout << " Inside " << std::endl;
-		matrix.printMatrix();
 		return matrix;
 	}
 	catch (std::exception &ex) {
@@ -219,10 +244,43 @@ M_Matrix<T> M_Matrix<T>::operator*(const M_Matrix<T> &other) const {
 	}
 	return matrix;
 }
-
 template M_Matrix<int> M_Matrix<int>::operator*(const M_Matrix<int> &other) const;
 template M_Matrix<float> M_Matrix<float>::operator*(const M_Matrix<float> &other) const;
 template M_Matrix<uint8_t> M_Matrix<uint8_t>::operator*(const M_Matrix<uint8_t> &other) const;
 
+template <typename T>
+M_Matrix<T> hadamardProduct(const Matrix<T> &other) const{
+	M_Matrix<T> matrix;
+	try{
+		if(this->rows == other.rows && this->cols == other.cols){
+			matrix.genZeroMatrix(this->rows, this->cols);
+			//Direct Multiplication
+			for(unsigned int row = 0; row < this->rows; row++){
+				for(unsigned int col = 0; col < this->cols; col++){
+					matrix.mtr[row][col] = this->mtr[row][col] * other.mtr[row][col];
+				}
+			}
+			return matrix;
+		}
+		else if(this->rows > other.rows && this->cols > other.cols){
+			//Convolution
+			unsigned int newRow = this->rows - other.cols + 1;
+			unsigned int newCol = this->cols - other.cols + 1;
+			//TODO Not Finished Yet
+			matrix = conv2D(this, other);
+			return matrix;
+		}
+		else{
+			throw InvalidMatrixSize;
+		}
+	}
+	catch (std::exception &ex){
+		std::cout << ex.what() << std::endl;
+	}
+	return matrix;
+}
+
+//template M_Matrix<float> M_Matrix<int>::operator*(const M_Matrix<float> &other) const;
+//template M_Matrix<float> M_Matrix<float>::operator*(const M_Matrix<int> &other) const;
 #endif
 
