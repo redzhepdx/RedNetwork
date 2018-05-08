@@ -34,7 +34,7 @@ public:
 	void genUnitMatrix(unsigned int rows, unsigned int cols);
 	void genGaussianMatrix(unsigned int rows, unsigned int cols);
 	void genMatrixWithValue(unsigned int rows, unsigned int cols, T value);
-
+	void transpose();
 	F_Vector<T> toVector();
 	T*			toArray();
 	F_Vector<T> flatten();

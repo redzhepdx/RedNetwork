@@ -1,9 +1,9 @@
 #include "M_Matrix.h"
 #include "Setup.h"
+#include "utils.h"
 #include <cmath>
 
 #if CPU
-
 //OOP Reqs
 template <typename T>
 M_Matrix<T>::M_Matrix(){
@@ -154,9 +154,15 @@ template void M_Matrix<double>::genGaussianMatrix(unsigned int rows, unsigned in
 
 template <typename T>
 F_Vector<T> M_Matrix<T>::toVector(){
-	F_Vector<T> vec;
+	F_Vector<T> _vec;
+	_vec.size = this->rows * this->cols;
+	for(unsigned int row = 0; row < this->rows; row++){
+		for(unsigned int col = 0; col < this->cols; col++){
+			_vec.vec.push_back(this->mtr[row][col]);
+		}
+	}
 
-	return vec;
+	return _vec;
 }
 
 template F_Vector<int> M_Matrix<int>::toVector();
@@ -208,6 +214,22 @@ template void M_Matrix<int>::genMatrixWithValue(unsigned int rows, unsigned int 
 template void M_Matrix<float>::genMatrixWithValue(unsigned int rows, unsigned int cols, float value);
 template void M_Matrix<uint8_t>::genMatrixWithValue(unsigned int rows, unsigned int cols, uint8_t value);
 
+template <typename T>
+void M_Matrix<T>::transpose(){
+	M_Matrix<T> holder;
+	holder.genZeroMatrix(this->cols, this->rows);
+	for(unsigned int row = 0; row < this->rows; row++){
+		for(unsigned int col = 0; col < this->cols; col++){
+			holder.mtr[col][row] = this->mtr[row][col];
+		}
+	}
+	this->mtr = holder.mtr;
+}
+template void M_Matrix<int>::transpose();
+template void M_Matrix<float>::transpose();
+template void M_Matrix<uint8_t>::transpose();
+template void M_Matrix<size_t>::transpose();
+
 /*OPERATORS*/
 template <typename T>
 M_Matrix<T> M_Matrix<T>::operator=(const M_Matrix<T> &other){
@@ -249,7 +271,7 @@ template M_Matrix<float> M_Matrix<float>::operator*(const M_Matrix<float> &other
 template M_Matrix<uint8_t> M_Matrix<uint8_t>::operator*(const M_Matrix<uint8_t> &other) const;
 
 template <typename T>
-M_Matrix<T> hadamardProduct(const Matrix<T> &other) const{
+M_Matrix<T> M_Matrix<T>::hadamardProduct(const M_Matrix<T> &other) const{
 	M_Matrix<T> matrix;
 	try{
 		if(this->rows == other.rows && this->cols == other.cols){
@@ -266,8 +288,7 @@ M_Matrix<T> hadamardProduct(const Matrix<T> &other) const{
 			//Convolution
 			unsigned int newRow = this->rows - other.cols + 1;
 			unsigned int newCol = this->cols - other.cols + 1;
-			//TODO Not Finished Yet
-			matrix = conv2D(this, other);
+			matrix = conv2D(*this, other);
 			return matrix;
 		}
 		else{
@@ -280,7 +301,38 @@ M_Matrix<T> hadamardProduct(const Matrix<T> &other) const{
 	return matrix;
 }
 
-//template M_Matrix<float> M_Matrix<int>::operator*(const M_Matrix<float> &other) const;
-//template M_Matrix<float> M_Matrix<float>::operator*(const M_Matrix<int> &other) const;
-#endif
+template M_Matrix<int> M_Matrix<int>::hadamardProduct(const M_Matrix<int> &other) const;
+template M_Matrix<float> M_Matrix<float>::hadamardProduct(const M_Matrix<float> &other) const;
+template M_Matrix<uint8_t> M_Matrix<uint8_t>::hadamardProduct(const M_Matrix<uint8_t> &other) const;
 
+template <typename T>
+F_Vector<T> M_Matrix<T>::sparseMatrixMult(const F_Vector<T> &vec) const{
+	F_Vector<T>               res_vec;
+	std::vector<T>            values;
+	std::vector<unsigned int> col_indexes;
+	std::vector<unsigned int> row_ptr;
+
+	for(int i = 0; i < this->rows; i++){
+        bool row_ptr_found = false;
+        for(int j = 0; j < this->cols; j++){
+            if(this->mtr[i][j] != 0){
+                values.push_back(this->mtr[i][j]);
+                col_indexes.push_back(j);
+                if(!row_ptr_found){
+                    row_ptr.push_back(values.size() - 1);
+                    row_ptr_found = true;
+                }
+
+            }
+        }
+    }
+	row_ptr.push_back(values.size());
+	res_vec = faster_matrix_mul_cpu(vec, values, col_indexes, row_ptr);
+	return res_vec;
+}
+
+template F_Vector<int> M_Matrix<int>::sparseMatrixMult(const F_Vector<int> &vec) const;
+template F_Vector<float> M_Matrix<float>::sparseMatrixMult(const F_Vector<float> &vec) const;
+template F_Vector<uint8_t> M_Matrix<uint8_t>::sparseMatrixMult(const F_Vector<uint8_t> &vec) const;
+
+#endif
