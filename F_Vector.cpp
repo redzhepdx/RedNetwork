@@ -39,16 +39,16 @@ template float* F_Vector<float>::toArray();
 template uint8_t* F_Vector<uint8_t>::toArray();
 
 template <typename T>
-F_Vector<T> F_Vector<T>::operator=(const F_Vector<T> &other){
+F_Vector<T> & F_Vector<T>::operator=(const F_Vector<T> &other){
 	this->size = other.size;
 	this->vec = other.vec;
 	return *this;
 }
 
-template F_Vector<int> F_Vector<int>::operator=(const F_Vector<int> &other);
-template F_Vector<size_t> F_Vector<size_t>::operator=(const F_Vector<size_t> &other);
-template F_Vector<float> F_Vector<float>::operator=(const F_Vector<float> &other);
-template F_Vector<uint8_t> F_Vector<uint8_t>::operator=(const F_Vector<uint8_t> &other);
+template F_Vector<int> & F_Vector<int>::operator=(const F_Vector<int> &other);
+template F_Vector<size_t> & F_Vector<size_t>::operator=(const F_Vector<size_t> &other);
+template F_Vector<float> & F_Vector<float>::operator=(const F_Vector<float> &other);
+template F_Vector<uint8_t> & F_Vector<uint8_t>::operator=(const F_Vector<uint8_t> &other);
 
 template <typename T>
 F_Vector<T> F_Vector<T>::operator+(const F_Vector<T> &other) const {
@@ -125,6 +125,7 @@ void F_Vector<T>::operator*=(const T &value)  {
 		this->vec[i] *= value;
 	}
 }
+
 
 template void F_Vector<int>::operator*=(const int &value) ;
 template void F_Vector<float>::operator*=(const float &value) ;

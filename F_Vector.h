@@ -22,7 +22,7 @@ public:
 	F_Vector<T> operator+(const F_Vector<T> &other) const;
 	F_Vector<T> operator-(const F_Vector<T> &other) const;
 	F_Vector<T> operator*(const F_Vector<T> &other) const;
-	F_Vector<T> operator=(const F_Vector<T> &other);
+	F_Vector<T> & operator=(const F_Vector<T> &other);
 	void operator*=(const T &value);
 	void operator+=(const T &value);
 	void operator-=(const T &value);

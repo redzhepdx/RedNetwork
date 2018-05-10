@@ -43,7 +43,7 @@ public:
 	M_Matrix<T> operator+(const M_Matrix<T> &other) const;
 	M_Matrix<T> operator-(const M_Matrix<T> &other) const;
 	M_Matrix<T> operator*(const M_Matrix<T> &other) const;
-	M_Matrix<T> operator=(const M_Matrix<T> &other);
+	M_Matrix<T> & operator=(const M_Matrix<T> &other);
 	
 	void operator+=(const T &value);
 	void operator*=(const T &value);

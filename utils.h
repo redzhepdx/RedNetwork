@@ -2,33 +2,41 @@
 #include "M_Matrix.h"
 
 template <typename T>
-bool isInInside(M_Matrix<T> matrix, unsigned int R, unsigned int C){
-	return (matrix.rows > R) && (matrix.cols > C) && (R >= 0) && (C >= 0);
+bool isInInside(std::vector<std::vector<T>> matrix, int R, int C, int F_R, int F_C){
+	int top_r      = (R - (int)(F_R / 2));
+	int top_c      = (C - (int)(F_C / 2));
+	int bot_r      = (R + (int)(F_R / 2));
+	int bot_c      = (C + (int)(F_C / 2));
+	bool top_left  = (top_r >= 0) && (top_c >= 0);
+	bool bot_right = (bot_r < matrix.size()) && (bot_c < matrix[0].size()); 
+	return top_left && bot_right;
 }
 
 template <typename T>
-M_Matrix<T> conv2D(M_Matrix<T> matrix, M_Matrix<T> filter){
-	M_Matrix<T> new_matrix;
+std::vector<std::vector<T>> conv2D(const std::vector<std::vector<T>> &matrix, const std::vector<std::vector<T>> &filter){
+	
+	unsigned int newRow = matrix.size() - filter.size() + 1;
+	unsigned int newCol = matrix[0].size() - filter[0].size() + 1;
+	std::vector<std::vector<T>> new_matrix(newRow, std::vector<T>(newCol, 0));
 
-	unsigned int newRow = matrix.rows - filter.rows + 1;
-	unsigned int newCol = matrix.cols - filter.cols + 1;
-
-	new_matrix.genZeroMatrix(newRow, newCol);
-
-	for(unsigned int row = 0; row < matrix.rows; row++){
-		for(unsigned int col = 0; col < matrix.cols; col++){
+	for(int row = 0; row < matrix.size(); row++){
+		for(int col = 0; col < matrix[row].size(); col++){
 			int sum = 0;
-			if (isInInside(matrix, matrix.rows, matrix.cols)){
-				for(int filterRow = -((int)filter.rows / 2); filterRow <= (filter.rows / 2); filterRow++){
-					for(int filterCol = -((int)filter.cols / 2); filterCol <= (filter.cols / 2); filterCol++){
-						unsigned int f_r = (filterRow + filter.rows / 2) * filter.cols;
-						unsigned int f_c = (filterCol + filter.cols / 2);
-						unsigned int m_r = (row + filterRow)* matrix.cols;
-						unsigned int m_c = (col + filterCol);
-						sum             += matrix.mtr[m_r][m_c] * filter.mtr[f_r][f_c];
+			if (isInInside(matrix, row, col, filter.size(), filter[0].size())){
+				for(int filterRow = -((int)filter.size() / 2);
+					filterRow <= ((int)filter.size() / 2);
+				 	filterRow++){
+					for(int filterCol = -((int)filter[0].size() / 2); 
+						filterCol <= ((int)filter[0].size() / 2); 
+						filterCol++){
+						int f_r          = (filterRow + ((int)filter.size() / 2));
+						int f_c          = (filterCol + ((int)filter.size() / 2));
+						int m_r          = (row + filterRow);
+						int m_c          = (col + filterCol);
+						sum             += matrix[m_r][m_c] * filter[f_r][f_c];
 					}
 				}
-				new_matrix.mtr[row - (filter.rows / 2)][col - (filter.cols / 2)] = sum;
+				new_matrix[row - ((int)filter.size() / 2)][col - ((int)filter[0].size() / 2)] = sum;
 			}
 		}
 	}
@@ -37,20 +45,22 @@ M_Matrix<T> conv2D(M_Matrix<T> matrix, M_Matrix<T> filter){
 
 
 template <typename T>
-F_Vector<T> faster_matrix_mul_cpu( F_Vector<T> vect,
-								   std::vector<T> &values,
-								   std::vector<unsigned int> &col_indexes,
-								   std::vector<unsigned int> &row_ptr)
+std::vector<T> faster_matrix_mul_cpu( std::vector<T> vect,
+								      std::vector<T> &values,
+								      std::vector<unsigned int> &col_indexes,
+								      std::vector<unsigned int> &row_ptr)
 {
-	F_Vector<T> res;
-
+	std::vector<T> res;
+	
 	for(unsigned int i = 1; i < row_ptr.size(); i++){
 		int sum = 0;
 		for(int index = row_ptr[i - 1]; index < row_ptr[i]; index++){
-			sum += (values[index] * vect.vec[col_indexes[index]]);
+			sum += (values[index] * vect[col_indexes[index]]);
 		}
-		res.vec.push_back(sum);
+		res.push_back(sum);
 	}
+	//for(int i = 0; i < res.size(); i++){std::cout << res[i] << std::endl;}
+	//std::cout << std::endl;
 
 	return res;
 }

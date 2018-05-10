@@ -29,11 +29,14 @@ template M_Matrix<float>::M_Matrix(unsigned int rows, unsigned int cols);
 
 template <typename T>
 M_Matrix<T>::M_Matrix(const M_Matrix<T> &other) {
-	this->mtr = other.mtr;
+	this->mtr  = other.mtr;
+	this->rows = other.cols;
+	this->cols = other.cols;
 }
 
 template M_Matrix<int>::M_Matrix(const M_Matrix<int> &other);
 template M_Matrix<float>::M_Matrix(const M_Matrix<float> &other);
+template M_Matrix<uint8_t>::M_Matrix(const M_Matrix<uint8_t> &other);
 
 template <typename T>
 M_Matrix<T>::~M_Matrix(){
@@ -234,17 +237,17 @@ template void M_Matrix<size_t>::transpose();
 
 /*OPERATORS*/
 template <typename T>
-M_Matrix<T> M_Matrix<T>::operator=(const M_Matrix<T> &other){
+M_Matrix<T> & M_Matrix<T>::operator=(const M_Matrix<T> &other){
 	this->rows = other.rows;
 	this->cols = other.cols;
 	this->mtr  = other.mtr;
 	return *this;
 }
 
-template M_Matrix<int> M_Matrix<int>::operator=(const M_Matrix<int> &other);
-template M_Matrix<float> M_Matrix<float>::operator=(const M_Matrix<float> &other);
-template M_Matrix<uint8_t> M_Matrix<uint8_t>::operator=(const M_Matrix<uint8_t> &other);
-template M_Matrix<size_t> M_Matrix<size_t>::operator=(const M_Matrix<size_t> &other);
+template M_Matrix<int> & M_Matrix<int>::operator=(const M_Matrix<int> &other);
+template M_Matrix<float> & M_Matrix<float>::operator=(const M_Matrix<float> &other);
+template M_Matrix<uint8_t> & M_Matrix<uint8_t>::operator=(const M_Matrix<uint8_t> &other);
+template M_Matrix<size_t> & M_Matrix<size_t>::operator=(const M_Matrix<size_t> &other);
 
 template <typename T>
 M_Matrix<T> M_Matrix<T>::operator*(const M_Matrix<T> &other) const {
@@ -376,7 +379,9 @@ M_Matrix<T> M_Matrix<T>::hadamardProduct(const M_Matrix<T> &other) const{
 			//Convolution
 			unsigned int newRow = this->rows - other.cols + 1;
 			unsigned int newCol = this->cols - other.cols + 1;
-			matrix = conv2D<T>(*this, other);
+			matrix.rows = newRow;
+			matrix.cols = newCol;
+			matrix.mtr = conv2D<T>(this->mtr, other.mtr);
 			return matrix;
 		}
 		else{
@@ -415,7 +420,10 @@ F_Vector<T> M_Matrix<T>::sparseMatrixMult(const F_Vector<T> &vec) const{
 		}
 	}
 	row_ptr.push_back(values.size());
-	res_vec = faster_matrix_mul_cpu(vec, values, col_indexes, row_ptr);
+	
+	res_vec.vec  = faster_matrix_mul_cpu(vec.vec, values, col_indexes, row_ptr);
+	res_vec.size = this->rows;
+
 	return res_vec;
 }
 
