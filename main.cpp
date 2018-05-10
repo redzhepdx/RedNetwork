@@ -75,7 +75,13 @@ int main() {
 	vec_y.printVec();
 	M_Matrix<int> mtr_move = std::move(mtr_z);
 	mtr_move.printMatrix();
+	std::cout << std::endl;
 	mtr_z.printMatrix();
+	F_Vector<int> vec_move = std::move(vec_y);
+	std::cout << std::endl;
+	vec_move.printVec();
+	std::cout << std::endl;
+	vec_y.printVec();
 	//matrix->genUnitMatrix(400, 400);
 	//matrix->printMatrix();
 	//std::unique_ptr<M_Matrix<float>> mtr = std::make_unique<M_Matrix<float>>(5, 5);

@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include "Setup.h"
 
 template <typename T>
 class F_Vector {
@@ -17,12 +18,14 @@ public:
 	F_Vector() {};
 	F_Vector(unsigned int size, bool init);
 	F_Vector(const F_Vector<T> &other);
+	F_Vector(F_Vector<T> && rhs) _NOEXCEPT;
 
 public:
 	F_Vector<T> operator+(const F_Vector<T> &other) const;
 	F_Vector<T> operator-(const F_Vector<T> &other) const;
 	F_Vector<T> operator*(const F_Vector<T> &other) const;
 	F_Vector<T> & operator=(const F_Vector<T> &other);
+	F_Vector<T> & operator=(F_Vector<T> && other) _NOEXCEPT;
 	void operator*=(const T &value);
 	void operator+=(const T &value);
 	void operator-=(const T &value);
@@ -30,7 +33,7 @@ public:
 
 public:
 	T* toArray();
-
+	void reset();
 public:
 	T getElement(int index) { return this->vec[index]; }
 	void printVec();

@@ -13,6 +13,17 @@ template F_Vector<int>::F_Vector(const F_Vector<int> &other);
 template F_Vector<float>::F_Vector(const F_Vector<float> &other);
 template F_Vector<uint8_t>::F_Vector(const F_Vector<uint8_t> &other);
 
+template <typename T>
+F_Vector<T>::F_Vector(F_Vector<T> && rhs) _NOEXCEPT{
+	this->size = std::move(rhs.size);
+	this->vec  = std::move(rhs.vec);
+	rhs.reset();
+}
+
+template F_Vector<int>::F_Vector(F_Vector<int> && rhs) _NOEXCEPT;
+template F_Vector<float>::F_Vector(F_Vector<float> && rhs) _NOEXCEPT;
+template F_Vector<uint8_t>::F_Vector(F_Vector<uint8_t> && rhs) _NOEXCEPT;
+template F_Vector<size_t>::F_Vector(F_Vector<size_t> && rhs) _NOEXCEPT;
 
 template <typename T>
 F_Vector<T>::F_Vector(unsigned int size, bool init) {
@@ -51,6 +62,18 @@ template F_Vector<float> & F_Vector<float>::operator=(const F_Vector<float> &oth
 template F_Vector<uint8_t> & F_Vector<uint8_t>::operator=(const F_Vector<uint8_t> &other);
 
 template <typename T>
+void F_Vector<T>::reset(){
+	this->size = 0;
+	this->vec.clear();
+}
+
+template void F_Vector<int>::reset();
+template void F_Vector<float>::reset();
+template void F_Vector<uint8_t>::reset();
+template void F_Vector<size_t>::reset();
+
+
+template <typename T>
 F_Vector<T> F_Vector<T>::operator+(const F_Vector<T> &other) const {
 	F_Vector<T> _vec(this->size, false);
 	try {
@@ -74,6 +97,21 @@ template F_Vector<int> F_Vector<int>::operator+(const F_Vector<int> &other) cons
 template F_Vector<float> F_Vector<float>::operator+(const F_Vector<float> &other) const;
 template F_Vector<uint8_t> F_Vector<uint8_t>::operator+(const F_Vector<uint8_t> &other) const;
 template F_Vector<size_t> F_Vector<size_t>::operator+(const F_Vector<size_t> &other) const;
+
+template <typename T>
+F_Vector<T> & F_Vector<T>::operator=(F_Vector<T> && rhs) _NOEXCEPT{
+	if(this != &rhs){
+		this->size = std::move(rhs.size);
+		this->vec  = std::move(rhs.vec);
+		rhs.reset();
+	}
+	return *this;
+}
+
+template F_Vector<int> & F_Vector<int>::operator=(F_Vector<int> && rhs) _NOEXCEPT;
+template F_Vector<float> & F_Vector<float>::operator=(F_Vector<float> && rhs) _NOEXCEPT;
+template F_Vector<uint8_t> & F_Vector<uint8_t>::operator=(F_Vector<uint8_t> && rhs) _NOEXCEPT;
+template F_Vector<size_t> & F_Vector<size_t>::operator=(F_Vector<size_t> && rhs) _NOEXCEPT;
 
 template <typename T>
 F_Vector<T> F_Vector<T>::operator-(const F_Vector<T> &other) const {
