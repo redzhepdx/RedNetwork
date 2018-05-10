@@ -73,7 +73,9 @@ int main() {
 	std::cout << "SpMv" << std::endl;
 	vec_y = mtr_z.sparseMatrixMult(vec_x);
 	vec_y.printVec();
-	
+	M_Matrix<int> mtr_move = std::move(mtr_z);
+	mtr_move.printMatrix();
+	mtr_z.printMatrix();
 	//matrix->genUnitMatrix(400, 400);
 	//matrix->printMatrix();
 	//std::unique_ptr<M_Matrix<float>> mtr = std::make_unique<M_Matrix<float>>(5, 5);

@@ -19,3 +19,10 @@
 #ifndef CUDNN
 #define CUDNN 0
 #endif
+
+#ifdef _MSC_VER
+#include "bw_msposix.h"
+#else
+#define _NOEXCEPT noexcept
+#endif
+

@@ -3,6 +3,7 @@
 #include <exception>
 #include <string>
 #include "F_Vector.h"
+#include "Setup.h"
 
 template <typename T>
 class M_Matrix {
@@ -27,6 +28,7 @@ public:
 	M_Matrix();
 	M_Matrix(unsigned int rows, unsigned int cols);
 	M_Matrix(const M_Matrix<T> &other);
+	M_Matrix(M_Matrix<T> && rhs) _NOEXCEPT;
 	~M_Matrix();
 
 public:
@@ -35,6 +37,7 @@ public:
 	void genGaussianMatrix(unsigned int rows, unsigned int cols);
 	void genMatrixWithValue(unsigned int rows, unsigned int cols, T value);
 	void transpose();
+	void reset();
 	F_Vector<T> toVector();
 	T*			toArray();
 	F_Vector<T> flatten();
@@ -44,6 +47,7 @@ public:
 	M_Matrix<T> operator-(const M_Matrix<T> &other) const;
 	M_Matrix<T> operator*(const M_Matrix<T> &other) const;
 	M_Matrix<T> & operator=(const M_Matrix<T> &other);
+	M_Matrix<T> & operator=(M_Matrix<T> && rhs) _NOEXCEPT;
 	
 	void operator+=(const T &value);
 	void operator*=(const T &value);

@@ -39,7 +39,21 @@ template M_Matrix<float>::M_Matrix(const M_Matrix<float> &other);
 template M_Matrix<uint8_t>::M_Matrix(const M_Matrix<uint8_t> &other);
 
 template <typename T>
+M_Matrix<T>::M_Matrix(M_Matrix<T> && rhs) _NOEXCEPT{
+    this->rows = std::move(rhs.rows);
+    this->cols = std::move(rhs.cols);
+    this->mtr  = std::move(rhs.mtr);
+    rhs.reset();
+}
+
+template M_Matrix<int>::M_Matrix(M_Matrix<int> && rhs) _NOEXCEPT;
+template M_Matrix<float>::M_Matrix(M_Matrix<float> && rhs) _NOEXCEPT;
+template M_Matrix<uint8_t>::M_Matrix(M_Matrix<uint8_t> && rhs) _NOEXCEPT;
+
+template <typename T>
 M_Matrix<T>::~M_Matrix(){
+	this->rows = 0;
+	this->cols = 0;
 	this->mtr.clear();
 }
 
@@ -235,6 +249,18 @@ template void M_Matrix<float>::transpose();
 template void M_Matrix<uint8_t>::transpose();
 template void M_Matrix<size_t>::transpose();
 
+
+template <typename T>
+void M_Matrix<T>::reset(){
+	this->rows = 0;
+	this->cols = 0;
+	this->mtr.clear();
+}
+
+template void M_Matrix<int>::reset();
+template void M_Matrix<float>::reset();
+template void M_Matrix<uint8_t>::reset();
+
 /*OPERATORS*/
 template <typename T>
 M_Matrix<T> & M_Matrix<T>::operator=(const M_Matrix<T> &other){
@@ -248,6 +274,22 @@ template M_Matrix<int> & M_Matrix<int>::operator=(const M_Matrix<int> &other);
 template M_Matrix<float> & M_Matrix<float>::operator=(const M_Matrix<float> &other);
 template M_Matrix<uint8_t> & M_Matrix<uint8_t>::operator=(const M_Matrix<uint8_t> &other);
 template M_Matrix<size_t> & M_Matrix<size_t>::operator=(const M_Matrix<size_t> &other);
+
+template <typename T>
+M_Matrix<T> & M_Matrix<T>::operator=(M_Matrix<T> && rhs) _NOEXCEPT{
+	if(this != &rhs){
+		this->rows = std::move(rhs.rows);
+		this->cols = std::move(rhs.cols);
+		this->mtr  = std::move(rhs.mtr);
+		rhs.reset();
+	}
+	return *this;
+}
+
+template M_Matrix<int> & M_Matrix<int>::operator=(M_Matrix<int> && rhs) _NOEXCEPT;
+template M_Matrix<float> & M_Matrix<float>::operator=(M_Matrix<float> && rhs) _NOEXCEPT;
+template M_Matrix<uint8_t> & M_Matrix<uint8_t>::operator=(M_Matrix<uint8_t> && rhs) _NOEXCEPT;
+template M_Matrix<size_t> & M_Matrix<size_t>::operator=(M_Matrix<size_t> && rhs) _NOEXCEPT;
 
 template <typename T>
 M_Matrix<T> M_Matrix<T>::operator*(const M_Matrix<T> &other) const {
@@ -265,7 +307,6 @@ M_Matrix<T> M_Matrix<T>::operator*(const M_Matrix<T> &other) const {
 				}
 			}
 		}
-		//matrix.printMatrix();
 		return matrix;
 	}
 	catch (std::exception &ex) {
