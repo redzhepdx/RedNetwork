@@ -21,7 +21,8 @@
 #endif
 
 #ifdef _MSC_VER
-#include "bw_msposix.h"
+//#include "bw_msposix.h"
+#define _NOEXCEPT noexcept
 #else
 #define _NOEXCEPT noexcept
 #endif

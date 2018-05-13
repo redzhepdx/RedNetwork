@@ -40,10 +40,10 @@ template M_Matrix<uint8_t>::M_Matrix(const M_Matrix<uint8_t> &other);
 
 template <typename T>
 M_Matrix<T>::M_Matrix(M_Matrix<T> && rhs) _NOEXCEPT{
-    this->rows = std::move(rhs.rows);
-    this->cols = std::move(rhs.cols);
-    this->mtr  = std::move(rhs.mtr);
-    rhs.reset();
+	this->rows = std::move(rhs.rows);
+	this->cols = std::move(rhs.cols);
+	this->mtr  = std::move(rhs.mtr);
+	rhs.reset();
 }
 
 template M_Matrix<int>::M_Matrix(M_Matrix<int> && rhs) _NOEXCEPT;

@@ -1,4 +1,6 @@
 #include "M_Matrix.h"
+#include "Activation.h"
+#include "Cost.h"
 #include <memory>
 
 int main() {

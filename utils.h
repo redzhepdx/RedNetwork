@@ -1,5 +1,33 @@
 #pragma once
 #include "M_Matrix.h"
+#include <cmath>
+
+template <typename T>
+T sum(std::vector<T> list) {
+	T total = 0;
+	for (int i = 0; i < list.size(); i++) {
+		total += list[i];
+	}
+	return total;
+}
+
+template <typename T>
+std::vector<T> log_sp(const std::vector<T> list) {
+	std::vector<T> res;
+	for (int i = 0; i < list.size(); i++) {
+		res.push_back(std::log(list[i]));
+	}
+	return res;
+}
+
+template <typename T>
+T frobenius_norm(const std::vector<T> vec) {
+	T total = 0;
+	for (int i = 0; i < vec.size(); i++) {
+		total += std::abs(vec[i] * vec[i]);
+	}
+	return std::sqrt(total);
+}
 
 template <typename T>
 bool isInInside(std::vector<std::vector<T>> matrix, int R, int C, int F_R, int F_C){
